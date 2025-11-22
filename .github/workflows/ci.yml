@@ -21,6 +21,8 @@ jobs:
           - stable
     steps:
       - uses: actions/checkout@v4
+      - name: "Install dependencies"
+        run: sudo apt update && sudo apt install libudev-dev
       - name: "📦 Setup Rust"
         run: rustup update ${{ matrix.toolchain }} && rustup default ${{ matrix.toolchain }}
       - name: "⚙️ Build"
