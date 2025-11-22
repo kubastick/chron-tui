@@ -17,9 +17,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let vendor_id = 0x3434;
     let wired_product_id = 0xd050;
     let wireless_receiver_product_id = 0xd028;
-    let mouse_hid_d = api.open(vendor_id, wired_product_id).or_else(|_| {
-        api.open(vendor_id, wireless_receiver_product_id)
-    })?;
+    let mouse_hid_d = api
+        .open(vendor_id, wired_product_id)
+        .or_else(|_| api.open(vendor_id, wireless_receiver_product_id))?;
 
     mouse_hid_d.set_blocking_mode(false)?;
     let product_name = mouse_hid_d.get_product_string()?.unwrap_or_default();
