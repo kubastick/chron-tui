@@ -1,6 +1,7 @@
 # chron_tui - Terminal user interface for adjusting Keychron mouse settings
 
 [![CI](https://github.com/kubastick/chron-tui/actions/workflows/ci.yml/badge.svg)](https://github.com/kubastick/chron-tui/actions/workflows/ci.yml)
+[![Crates.io](https://img.shields.io/crates/v/chron_tui.svg)](https://crates.io/crates/chron_tui)
 
 ⚠️ Warning - the project is in a very early stage, try at your own risk and expect A LOT of issues  
 
