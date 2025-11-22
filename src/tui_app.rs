@@ -1,4 +1,4 @@
-use crate::mouse_device::DpiConfig;
+use crate::mouse_device::{DpiConfig, MouseDevice};
 use ratatui::crossterm::event;
 use ratatui::crossterm::event::{Event, KeyCode, KeyEvent, KeyEventKind};
 use ratatui::prelude::*;
@@ -8,9 +8,10 @@ use std::io;
 
 #[derive(Debug)]
 pub struct App {
+    pub mouse_d: MouseDevice,
     pub device_name: String,
     pub dpi_config: DpiConfig,
-    pub current_dpi_index: i16,
+    pub current_dpi_index: i8,
     pub exit: bool,
 }
 
@@ -48,8 +49,16 @@ impl App {
             }
             KeyCode::Down => {
                 self.current_dpi_index += 1;
-                let max_index = self.dpi_config.presets.len() as i16 - 1;
+                let max_index = self.dpi_config.presets.len() as i8 - 1;
                 self.current_dpi_index = self.current_dpi_index.min(max_index);
+            },
+            KeyCode::Enter => {
+                let dpi_preset_index = self.current_dpi_index;
+                // This do not always succeed, so ignore error for now
+                let _ = self.mouse_d.set_active_dpi_preset(dpi_preset_index as u8);
+                if let Ok(dpi_config) = self.mouse_d.get_dpi_config() {
+                    self.dpi_config = dpi_config;
+                }
             }
             _ => {}
         }
@@ -61,15 +70,15 @@ impl Widget for &App {
         let title = Line::from(format!(" chron_tui - {0} ", self.device_name).bold());
         let instructions = Line::from(vec![
             " Choose ".into(),
-            "<Up/Down>".blue().bold(),
+            "<Up/Down>".cyan().bold(),
             " Select ".into(),
-            "<Enter>".blue().bold(),
+            "<Enter>".cyan().bold(),
             " Edit ".into(),
-            "<E>".blue().bold(),
+            "<E>".cyan().bold(),
             " Switch tab ".into(),
-            "<Tab>".blue().bold(),
+            "<Tab>".cyan().bold(),
             " Quit ".into(),
-            "<Q> ".blue().bold(),
+            "<Q> ".cyan().bold(),
         ]);
         let block = Block::bordered()
             .title(title.left_aligned())
