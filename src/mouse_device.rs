@@ -61,11 +61,7 @@ impl MouseDevice {
         cmd.extend_from_slice(&[0x06, 0x00]);
         cmd.resize(64, 0);
 
-        // Without sending command 3 times we do not always get response - firmware bug (?)
-        for _i in 0..3 {
-            self.device.write(&cmd)?;
-            thread::sleep(Duration::from_millis(100));
-        }
+        self.device.write(&cmd)?;
 
         trace!("Waiting for dpi config response");
         let mut buf = [0u8; 64];
