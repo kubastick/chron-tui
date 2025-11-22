@@ -51,7 +51,7 @@ impl App {
                 self.current_dpi_index += 1;
                 let max_index = self.dpi_config.presets.len() as i8 - 1;
                 self.current_dpi_index = self.current_dpi_index.min(max_index);
-            },
+            }
             KeyCode::Enter => {
                 let dpi_preset_index = self.current_dpi_index;
                 // This do not always succeed, so ignore error for now
@@ -101,7 +101,9 @@ impl Widget for &App {
                 false => " ".to_owned(),
             };
 
-            let list_str = format!("{dpi_highlighted_symbol}#{natural_index} [{dpi_preset_active_symbol}] {dpi_value}");
+            let list_str = format!(
+                "{dpi_highlighted_symbol}#{natural_index} [{dpi_preset_active_symbol}] {dpi_value}"
+            );
             let list_item_style = match dpi_highlighted {
                 true => match dpi_preset_active {
                     true => Style::new().bold().bg(Color::Green).fg(Color::White),
