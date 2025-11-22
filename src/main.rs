@@ -1,7 +1,7 @@
 mod mouse_device;
 mod tui_app;
 
-use crate::mouse_device::{ MouseDevice};
+use crate::mouse_device::MouseDevice;
 use crate::tui_app::App;
 use hidapi::HidApi;
 use log::trace;
@@ -15,15 +15,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     trace!("Initializing mouse receiver device");
     let vendor_id = 0x3434;
-    let product_id = 0xd028;
+    let wired_product_id = 0xd050;
+    let wireless_receiver_product_id = 0xd028;
+    let mouse_hid_d = api.open(vendor_id, wired_product_id).or_else(|_| {
+        api.open(vendor_id, wireless_receiver_product_id)
+    })?;
 
-    let mouse_hid_d = api.open(vendor_id, product_id)?;
     mouse_hid_d.set_blocking_mode(false)?;
     let product_name = mouse_hid_d.get_product_string()?.unwrap_or_default();
     trace!("Opened mouse device! ({product_name})");
 
     let mouse_d = MouseDevice::new(mouse_hid_d);
     let dpi_cfg = mouse_d.get_dpi_config()?;
+    mouse_d.get_device_info()?;
 
     trace!("DPI config: {:?}", dpi_cfg);
 
@@ -31,6 +35,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     color_eyre::install()?;
     let mut terminal = ratatui::init();
     let app_result = App {
+        mouse_d,
         device_name: product_name,
         dpi_config: dpi_cfg,
         current_dpi_index: 0,
