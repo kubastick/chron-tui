@@ -11,6 +11,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     trace!("Initializing HID API");
     let api = HidApi::new()?;
+
+    #[cfg(target_os = "macos")]
     api.set_open_exclusive(false);
 
     trace!("Initializing mouse receiver device");
